@@ -1,0 +1,96 @@
+--------------------------------------------------------------
+-- Numero do Grupo: <n�mero do grupo>
+-- <nome do 1� elemento do grupo> (<n�mero do 1� elemento do grupo>)
+-- <nome do 2� elemento do grupo> (<n�mero do 2� elemento do grupo>)
+--------------------------------------------------------------
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+-- Uncomment the following library declaration if using
+-- arithmetic functions with Signed or Unsigned values
+--use IEEE.NUMERIC_STD.ALL;
+
+-- Uncomment the following library declaration if instantiating
+-- any Xilinx leaf cells in this code.
+-- library UNISIM;
+-- use UNISIM.VComponents.all;
+
+entity Lab3 is
+    Port ( A : in STD_LOGIC_VECTOR (4 downto 0);
+           B : in STD_LOGIC_VECTOR (4 downto 0);
+           I : in STD_LOGIC;
+           S : out STD_LOGIC_VECTOR (7 downto 0));
+end Lab3;
+
+architecture Behavioral of lab3 is
+-- declaracao do componente somador8
+component somador8 
+    Port ( P : in STD_LOGIC_VECTOR (7 downto 0);
+           Q : in STD_LOGIC_VECTOR (7 downto 0);
+           cin : in STD_LOGIC;
+           R : out STD_LOGIC_VECTOR (7 downto 0);
+          cout : out STD_LOGIC);
+end component;
+
+-- declaracao dos sinais internos
+signal sign_a, sign_b : std_logic_vector (7 downto 0);
+
+signal som1_P, som1_Q, som1_S : std_logic_vector (7 downto 0);
+signal som1_cin : std_logic;
+
+signal som2_P, som2_Q, som2_S : std_logic_vector (7 downto 0);
+signal som2_cin : std_logic;
+
+signal som3_P, som3_Q, som3_S : std_logic_vector (7 downto 0);
+signal som3_cin : std_logic;
+
+
+-- declaracao de sinais adicionais que possam ser nencessarios
+
+begin
+-- criacao do sinal sign_A e sign_B, i.e., extensao do sinal A e B repetindo o bit mais significativo de duas formas alternativas
+-- simbolo "&" representa a concatenacao dos bits
+-- express�o "(7 downto 5 => B(9))" representa a repetic�o do bit de sinal B(4) nos bits 7, 6, e 5 de sign_B
+sign_A <= A(4) & A(4) & A(4) & A(4 downto 0);
+sign_B <= (7 downto 5 => B(4)) & B;
+
+-- instancia dos SOMADORES (port map)
+-- n�o modificar
+SOM1: somador8 port map (
+        P => som1_P, Q => som1_Q, cin => som1_cin,
+        R => som1_S 
+    );
+
+SOM2: somador8 port map (
+        P => som2_P, Q => som2_Q, cin => som2_cin,
+        R => som2_S 
+    );    
+
+SOM3: somador8 port map (
+        P => som3_P, Q => som3_Q, cin => som3_cin,
+        R => som3_S 
+    );       
+
+    
+-- calculo de 2B + A
+    som1_P <= sign_a;
+    som1_Q <= sign_b(6 downto 0) & '0';   
+
+-- calculo de -2B + A
+    som2_P <= sign_a;
+    som2_Q <= not(sign_b(6 downto 0) & '0');
+    som2_cin <= '1';
+
+-- calculo de (-2B + A) + 2A = 3A - 2B
+    som3_P <= som2_S; --   -2B +A 
+    som3_Q <= sign_a(6 downto 0) & '0';
+    
+-- escolher entre (2B + A)/2 e (3A - 2B)/8
+    with I select
+        S <= som1_S(7) & som1_S(7 downto 1) when '0', --shra (/2)
+            som3_S(7) & som3_S (7) & som3_S (7) & som3_S(7 downto 3) when others; --shra x 3 (/8)
+
+
+
+end Behavioral;
