@@ -1,5 +1,15 @@
 # vivado-lab3
 
-alterar descrição dos somadores 8 bits **(somador8.vhd)**
+**(somador8)**
 
-alterar descrição do ficheiro **lab3.vhd**
+para alterar o ficheiro somador8.vhd
+
+
+
+**lab3-3adders-1mux**
+
+para alterar o ficheiro lab3.vhd (usando 3 8-bit adders e 1 multiplexers)
+
+**lab3-3adders-3mux**
+
+para alterar o ficheiro lab3.vhd (usando 3 8-bit adders e 3 multiplexers)
