@@ -1,4 +1,4 @@
-# vivado-lab3
+# I HATE SNICKERS
 
 **(somador8)**: para alterar o ficheiro somador8.vhd
 
